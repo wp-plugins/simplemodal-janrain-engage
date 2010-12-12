@@ -1,0 +1,79 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Text in function
+#: ps_simplemodal_janrain_engage.php:1
+msgid "A password will be e-mailed to you."
+msgstr ""
+
+#. Text in function
+#: ps_simplemodal_janrain_engage.php:1
+msgid "Cancel"
+msgstr ""
+
+#. Text in function
+#: ps_simplemodal_janrain_engage.php:1
+msgid "E-mail"
+msgstr ""
+
+#. Text in function
+#: ps_simplemodal_janrain_engage.php:1
+msgid "Get New Password"
+msgstr ""
+
+#. Text in function
+#: ps_simplemodal_janrain_engage.php:1
+msgid "Log In"
+msgstr ""
+
+#. Text in function
+#: ps_simplemodal_janrain_engage.php:1
+msgid "Log in"
+msgstr ""
+
+#. Text in function
+#: ps_simplemodal_janrain_engage.php:1
+msgid "Or, Login"
+msgstr ""
+
+#. Text in function
+#: ps_simplemodal_janrain_engage.php:1
+msgid "Lost your password?"
+msgstr ""
+
+#. Text in function
+#: ps_simplemodal_janrain_engage.php:1
+msgid "Password"
+msgstr ""
+
+#. Text in function
+#: ps_simplemodal_janrain_engage.php:1
+msgid "Password Lost and Found"
+msgstr ""
+
+#. Text in function
+#: ps_simplemodal_janrain_engage.php:1
+msgid "Or, Register"
+msgstr ""
+
+#. Text in function
+#: ps_simplemodal_janrain_engage.php:1
+msgid "Remember Me"
+msgstr ""
+
+#. Text in function
+#: ps_simplemodal_janrain_engage.php:1
+msgid "Reset Password"
+msgstr ""
+
+#. Text in function
+#: ps_simplemodal_janrain_engage.php:1
+msgid "Username"
+msgstr ""
+
+#. Text in function
+#: ps_simplemodal_janrain_engage.php:1
+msgid "Username or E-mail:"
+msgstr ""
