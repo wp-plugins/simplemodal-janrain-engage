@@ -12,7 +12,7 @@ SimpleModal Janrain Engage adds Janrain Engage (aka rpx) to your SimpleModal Log
 
 SimpleModal Janrain Engage adds Janrain Engage (aka rpx) to your SimpleModal Login. The [Janrain Engage](http://wordpress.org/extend/plugins/rpx/) and [SimpleModal Login](http://wordpress.org/extend/plugins/simplemodal-login/) plugins must be installed and working.
 
-The Janrain Engage embedded widget support several languages. The SimpleModal Janrain Engange plugin will try to automatically set the language for the embedded Janrain Engage widget based on your locale. If the plugin doesn't find a match, it will use the fallback language set by you in the plugin settings page.
+The Janrain Engage embedded widget support several languages. The SimpleModal Janrain Engange plugin will try to set the language for the embedded Janrain Engage widget based on your locale. If the plugin doesn't find a match, it will use the fallback language set by you in the plugin settings page.
 
 For more information and larger screenshots, please see the [plugin home page](http://soderlind.no/archives/2010/12/03/simplemodal-janrain-engage/)
 
