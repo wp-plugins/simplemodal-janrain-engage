@@ -3,13 +3,14 @@
 Plugin Name: SimpleModal Janrain Engage
 Plugin URI: http://soderlind.no
 Description: Adds Janrain Engage (rpx) to SimpleModal Login. The Janrain Engage and SimpleModal Login plugins must be installed and working.
-Version: 1.0.0
-Author: Per S
+Version: 1.1
+Author: PerS
 Author URI: http://soderlind.no
 */
 /*
 
 Changelog:
+v1.1: Added language support for the Janrain Engange embedded widget and updated the ps_simplemodal_janrain_engage.pot file
 v1.0: Initial release
 
 */
@@ -22,10 +23,49 @@ Credits:
 if (!class_exists('ps_simplemodal_janrain_engage')) {
     class ps_simplemodal_janrain_engage {
 		/**
+        * @var string The options string name for this plugin
+        */
+        var $optionsName = 'ps_simplemodal_janrain_engage_options';
+ 
+        /**
+        * @var array $options Stores the options for this plugin
+        */
+        var $options = array();
+	
+		/**
 		* @var string $localizationDomain Domain used for localization
 		*/
 		var $localizationDomain = "ps_simplemodal_janrain_engage";
-
+		var $wordpress_janrain_locales = array(	'bg_BG' => 'bg',
+												'cs_CZ' => 'cs',
+												'da_DK' => 'da',
+												'de_DE' => 'de',
+												'el'    => 'el',
+												'en'    => 'en',
+												'es_ES' => 'es',
+												'fi'    => 'fi',
+												'fr_FR' => 'fr',
+												'he_IL' => 'he',
+												'hr'    => 'hr',
+												'hu_HU' => 'hu',
+												'id_ID' => 'id',
+												'it_IT' => 'it',
+												'ja'    => 'ja',
+												'lt_LT' => 'lt',
+												'nb_NO' => 'nb-NO',
+												'nl_NL' => 'nl',
+												'pl_PL' => 'pl',
+												'pt_PT' => 'pt',
+												'pt_BR' => 'pt-BR',
+												'ro_RO' => 'ro',
+												'ru_RU' => 'ru',
+												'sk_SK' => 'sk',
+												'sl_SI' => 'sl',
+												'sv_SE' => 'sv-SE',
+												'th'    => 'th',
+												'zh_CN' => 'zh');
+												
+		
 		/**
 		* @var string $url The url to this plugin
 		*/ 
@@ -52,7 +92,10 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 		    //"Constants" setup
 			$this->url = plugins_url(basename(__FILE__), __FILE__);
 			$this->urlpath = plugins_url('', __FILE__);
-
+			//Initialize the options
+			$this->getOptions();
+			//Admin menu
+			add_action("admin_menu", array(&$this,"admin_menu_link"));
 			//Actions
 			add_action("init", array(&$this,"ps_simplemodal_janrain_engage_init"));
 			add_action('wp_print_styles', array(&$this,'ps_simplemodal_janrain_engage_style'));
@@ -60,30 +103,6 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 			add_filter('simplemodal_login_form', array(&$this,'ps_simplemodal_janrain_engage_login_form'));
 			add_filter('simplemodal_registration_form', array(&$this,'ps_simplemodal_janrain_engage_registration_form'));
 			add_filter('simplemodal_reset_form', array(&$this,'ps_simplemodal_janrain_engage_reset_form'));		    
-		}
-
-
-		function ps_simplemodal_janrain_engage_dependency_check() {	
-			$missing_plugin = "";
-			$required_plugins_assoc =  array('rpx/rpx.php' => 'Janrain Engage','simplemodal-login/simplemodal-login.php' => 'SimpleModal Login');
-			if((get_option(RPX_API_KEY_OPTION) != "") && (get_option('simplemodal_login_options') != "")) {
-				$required_plugins = array('rpx/rpx.php','simplemodal-login/simplemodal-login.php');
-				$active_plugins = get_option('active_plugins');
-				foreach ($required_plugins as $required_plugin) {
-				    if ( !in_array( $required_plugin , $active_plugins )) {
-						$missing_plugin .= $required_plugins_assoc[$required_plugin] . " "; 
-					}
-				}
-				if ($missing_plugin == "")
-					return; // everything is ok
-			}
-
-		    $message = sprintf('<p>This plugin requires %s, which you do not have. Add and activate the missing plugin</p>', $missing_plugin); 
-
-		    if( function_exists('deactivate_plugins') ) {
-		        deactivate_plugins(__FILE__); 
-			}
-			exit($message);
 		}
 
 		
@@ -105,6 +124,14 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 			}
 		}
 
+		function ps_simplemodal_janrain_engange_locale() {
+			$locale = get_locale();
+			if (array_key_exists( $locale , $this->wordpress_janrain_locales )) {
+				return  $this->wordpress_janrain_locales[$locale]; 
+			} else {
+				return $this->options['ps_simplemodal_janrain_engage_option_language'];
+			}
+		}
 
 		function ps_simplemodal_janrain_engage_login_form($form) {
 			$users_can_register = get_option('users_can_register') ? true : false;
@@ -117,7 +144,7 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 		
 			$output = sprintf('
 		<div id="modalrpx" style="float:left;padding:8px;margin-right:0 auto;">
-		<iframe src="%s://%s/openid/embed?token_url=%s" scrolling="no" frameBorder="no" allowtransparency="true" style="width:350px;height:240px;margin:0;padding:0;"></iframe>
+		<iframe src="%s://%s/openid/embed?token_url=%s&language_preference=%s" scrolling="no" frameBorder="no" allowtransparency="true" style="width:350px;height:240px;margin:0;padding:0;"></iframe>
 		</div>
 		<div style="float:right;width=350px;">
 		<form name="loginform" id="loginform" action="%s" method="post">
@@ -134,10 +161,11 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 				$rpx_rp['realmScheme'],
 				$rpx_rp['realm'],
 				RPX_TOKEN_URL,
+				$this->ps_simplemodal_janrain_engange_locale(),
 				site_url('wp-login.php', 'login_post'),
-				__('Or, Login', 'ps_simplemodal_janrain_engage'),
-				__('Username', 'ps_simplemodal_janrain_engage'),
-				__('Password', 'ps_simplemodal_janrain_engage')
+				__('Or, Login', $this->localizationDomain),
+				__('Username', $this->localizationDomain),
+				__('Password', $this->localizationDomain)
 			);
 
 			ob_start();
@@ -151,15 +179,15 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 				<input type="hidden" name="testcookie" value="1" />
 			</p>
 			<p class="nav">',
-				__('Remember Me', 'ps_simplemodal_janrain_engage'),
-				__('Log In', 'ps_simplemodal_janrain_engage'),
-				__('Cancel', 'ps_simplemodal_janrain_engage')
+				__('Remember Me', $this->localizationDomain),
+				__('Log In', $this->localizationDomain),
+				__('Cancel', $this->localizationDomain)
 			);
 
 			if ($users_can_register && $options['registration']) {
 				$output .= sprintf('<a class="simplemodal-register" href="%s">%s</a>', 
 					site_url('wp-login.php?action=register', 'login'), 
-					__('Register', 'ps_simplemodal_janrain_engage')
+					__('Register', $this->localizationDomain)
 				);
 			}
 
@@ -170,8 +198,8 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 			if ($options['reset']) {
 				$output .= sprintf('<a class="simplemodal-forgotpw" href="%s" title="%s">%s</a>',
 					site_url('wp-login.php?action=lostpassword', 'login'),
-					__('Password Lost and Found', 'ps_simplemodal_janrain_engage'),
-					__('Lost your password?', 'ps_simplemodal_janrain_engage')
+					__('Password Lost and Found', $this->localizationDomain),
+					__('Lost your password?', $this->localizationDomain)
 				);
 			}
 
@@ -204,9 +232,9 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 				<input type="text" name="user_email" class="user_email input" value="" size="25" tabindex="20" /></label>
 			</p>',
 				site_url('wp-login.php?action=register', 'login_post'),
-				__('Or, Register', 'ps_simplemodal_janrain_engage'),
-				__('Username', 'ps_simplemodal_janrain_engage'),
-				__('E-mail', 'ps_simplemodal_janrain_engage')
+				__('Or, Register', $this->localizationDomain),
+				__('Username', $this->localizationDomain),
+				__('E-mail', $this->localizationDomain)
 			);
 
 			ob_start();
@@ -221,18 +249,18 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 			</p>
 			<p class="nav">
 				<a class="simplemodal-login" href="%s">%s</a>',
-						__('A password will be e-mailed to you.', 'ps_simplemodal_janrain_engage'),
-						__('Register', 'ps_simplemodal_janrain_engage'),
-						__('Cancel', 'ps_simplemodal_janrain_engage'),
+						__('A password will be e-mailed to you.', $this->localizationDomain),
+						__('Register', $this->localizationDomain),
+						__('Cancel', $this->localizationDomain),
 						site_url('wp-login.php', 'login'),
-						__('Log in', 'ps_simplemodal_janrain_engage')
+						__('Log in', $this->localizationDomain)
 					);
 
 					if ($options['reset']) {
 						$output .= sprintf(' | <a class="simplemodal-forgotpw" href="%s" title="%s">%s</a>',
 							site_url('wp-login.php?action=lostpassword', 'login'),
-							__('Password Lost and Found', 'ps_simplemodal_janrain_engage'),
-							__('Lost your password?', 'ps_simplemodal_janrain_engage')
+							__('Password Lost and Found', $this->localizationDomain),
+							__('Lost your password?', $this->localizationDomain)
 						);
 					}
 
@@ -261,8 +289,8 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 			</p>',
 
 			site_url('wp-login.php?action=lostpassword', 'login_post'),
-			__('Reset Password', 'ps_simplemodal_janrain_engage'),
-			__('Username or E-mail:', 'ps_simplemodal_janrain_engage')
+			__('Reset Password', $this->localizationDomain),
+			__('Username or E-mail:', $this->localizationDomain)
 			);
 			
 			ob_start();
@@ -276,14 +304,14 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 			</p>
 			<p class="nav">
 				<a class="simplemodal-login" href="%s">%s</a>',
-					__('Get New Password', 'ps_simplemodal_janrain_engage'),
-					__('Cancel', 'ps_simplemodal_janrain_engage'),
+					__('Get New Password', $this->localizationDomain),
+					__('Cancel', $this->localizationDomain),
 					site_url('wp-login.php', 'login'),
-					__('Log in', 'ps_simplemodal_janrain_engage')
+					__('Log in', $this->localizationDomain)
 				);
 
 				if ($users_can_register && $options['registration']) {
-					$output .= sprintf('| <a class="simplemodal-register" href="%s">%s</a>', site_url('wp-login.php?action=register', 'login'), __('Register', 'ps_simplemodal_janrain_engage'));
+					$output .= sprintf('| <a class="simplemodal-register" href="%s">%s</a>', site_url('wp-login.php?action=register', 'login'), __('Register', $this->localizationDomain));
 				}
 
 				$output .= '
@@ -294,6 +322,153 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 
 			return $output;
 		}
+		
+		
+        /**
+        * @desc Retrieves the plugin options from the database.
+        * @return array
+        */
+        function getOptions() {
+            if (!$theOptions = get_option($this->optionsName)) {
+                $theOptions = array('ps_simplemodal_janrain_engage_option_language'=> 'en');
+                update_option($this->optionsName, $theOptions);
+            }
+            $this->options = $theOptions;
+        }
+        /**
+        * Saves the admin options to the database.
+        */
+        function saveAdminOptions(){
+            return update_option($this->optionsName, $this->options);
+        }
+
+        /**
+        * @desc Adds the options subpanel
+        */
+        function admin_menu_link() {
+            add_options_page('SimpleModal Janrain Engage', 'SimpleModal Janrain Engage', 10, basename(__FILE__), array(&$this,'admin_options_page'));
+            add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), array(&$this, 'filter_plugin_actions'), 10, 2 );
+        }
+
+        /**
+        * @desc Adds the Settings link to the plugin activate/deactivate page
+        */
+        function filter_plugin_actions($links, $file) {
+           $settings_link = '<a href="options-general.php?page=' . basename(__FILE__) . '">' . __('Settings') . '</a>';
+           array_unshift( $links, $settings_link ); // before other links
+
+           return $links;
+        }
+
+        /**
+        * Adds settings/options page
+        */
+        function admin_options_page() { 
+            if($_POST['ps_simplemodal_janrain_engage_save']){
+                if (! wp_verify_nonce($_POST['_wpnonce'], 'ps_simplemodal_janrain_engage-update-options') ) die('Whoops! There was a problem with the data you posted. Please go back and try again.');                    
+				$this->options['ps_simplemodal_janrain_engage_option_language'] = $_POST['ps_simplemodal_janrain_engage_option_language'];                   
+
+                $this->saveAdminOptions();
+
+                echo '<div class="updated"><p>' . __('Success! Your changes were sucessfully saved!',$this->localizationDomain) . '</p></div>';
+            }
+
+			$janrain_locales = array(    'bg' => __('Bulgarian',$this->localizationDomain), 
+										 'cs' => __('Czech', $this->localizationDomain),
+										 'da' => __('Danish', $this->localizationDomain),
+										 'de' => __('German', $this->localizationDomain),
+										 'el' => __('Greek', $this->localizationDomain),
+										 'en' => __('English', $this->localizationDomain),
+										 'es' => __('Spanish', $this->localizationDomain),
+										 'fi' => __('Finnish', $this->localizationDomain),
+										 'fr' => __('French', $this->localizationDomain),
+										 'he' => __('Hebrew', $this->localizationDomain),
+										 'hr' => __('Croatian', $this->localizationDomain),
+										 'hu' => __('Hungarian', $this->localizationDomain),
+										 'id' => __('Indonesian', $this->localizationDomain),
+										 'it' => __('Italian', $this->localizationDomain),
+										 'ja' => __('Japanese', $this->localizationDomain),
+										 'lt' => __('Lithuanian', $this->localizationDomain),
+										 'nb-NO' => __('Norwegian', $this->localizationDomain),
+										 'nl' => __('Dutch',$this->localizationDomain),
+										 'pl' => __('Polish', $this->localizationDomain),
+										 'pt' => __('Portuguese', $this->localizationDomain),
+										 'pt-BR' => __('Brazilian Portuguese',  $this->localizationDomain),
+										 'ro' => __('Romanian', $this->localizationDomain),
+										 'ru' => __('Russian', $this->localizationDomain),
+										 'sk' => __('Slovak', $this->localizationDomain),
+										 'sl' => __('Slovenian', $this->localizationDomain),
+										 'sv-SE' => __('Swedish',  $this->localizationDomain),
+										 'th' => __('Thai', $this->localizationDomain),
+										 'zh' => __('Chinese', $this->localizationDomain));
+				asort($janrain_locales);
+?>                                   
+                <div class="wrap">
+                <h2>SimpleModal Janrain Engage</h2>
+                <p>
+                <?php _e('The Janrain Engage embedded widget support several languages (see the fallback languages below). The SimpleModal Janrain Engange plugin will try to automatically set the language for the embedded Janrain Engage widget based on your <a href="http://codex.wordpress.org/WordPress_in_Your_Language">locale</a>. If the plugin doesn\'t find a match, it will use the selected fallback language below.', $this->localizationDomain); ?>
+                </p>
+                <form method="post" id="ps_simplemodal_janrain_engage_options">
+                <?php wp_nonce_field('ps_simplemodal_janrain_engage-update-options'); ?>
+                    <table width="100%" cellspacing="2" cellpadding="5" class="form-table"> 
+
+                        <tr valign="top"> 
+                            <th width="33%" scope="row"><?php _e('Fallback language:', $this->localizationDomain); ?></th> 
+                            <td>
+                                <select name="ps_simplemodal_janrain_engage_option_language" type="text" id="ps_simplemodal_janrain_engage_option2">
+								<?php
+								foreach ($janrain_locales as $locale => $language) {
+									$selected = ($locale == $this->options['ps_simplemodal_janrain_engage_option_language']) ? ' selected="selected"' : '';
+									printf ('<option value="%s" %s>%s</option>',$locale,$selected,$language);
+								}
+								?>
+								</select>
+                            </td> 
+                        </tr>
+                    </table>
+                    <p class="submit"> 
+                        <input type="submit" name="ps_simplemodal_janrain_engage_save" class="button-primary" value="<?php _e('Save Changes', $this->localizationDomain); ?>" />
+                    </p>
+                </form>
+               	<h2><?php _e('Like To Contribute?', $this->localizationDomain);?></h2>
+				<p>
+				<?php _e('If you would like to contribute, the following is a list of ways you can help:', $this->localizationDomain);?>
+				</p>
+				<ul>
+				<li>&raquo; <?php _e('Translate SimpleModal Janrain Engage into your language, the ps_simplemodal_janrain_engage.pot file is in the wp-content/plugins/simplemodal-janrain-engage/languages folder', $this->localizationDomain);?></li>
+				<li>&raquo; <?php _e('Blog about or link to SimpleModal Janrain Engage so others can find out about it', $this->localizationDomain);?></li>
+				<li>&raquo; <a href="http://soderlind.no/contact-me/"><?php _e('Report issues, provide feedback, request features, etc.', $this->localizationDomain);?></a></li>
+				<li>&raquo; <a href="http://wordpress.org/extend/plugins/simplemodal-janrain-engage/"><?php _e('Rate SimpleModal Janrain Engage on the WordPress Plugins Page', $this->localizationDomain);?></a></li>
+				<li>&raquo; <a href="http://soderlind.no/donate/"><?php _e('Make a donation', $this->localizationDomain);?></a></li>
+				</ul>
+                <?php
+        }
+		
+		
+		function ps_simplemodal_janrain_engage_dependency_check() {	
+			$missing_plugin = "";
+			$required_plugins_assoc =  array('rpx/rpx.php' => 'Janrain Engage','simplemodal-login/simplemodal-login.php' => 'SimpleModal Login');
+			if((get_option(RPX_API_KEY_OPTION) != "") && (get_option('simplemodal_login_options') != "")) {
+				$required_plugins = array('rpx/rpx.php','simplemodal-login/simplemodal-login.php');
+				$active_plugins = get_option('active_plugins');
+				foreach ($required_plugins as $required_plugin) {
+				    if ( !in_array( $required_plugin , $active_plugins )) {
+						$missing_plugin .= $required_plugins_assoc[$required_plugin] . " "; 
+					}
+				}
+				if ($missing_plugin == "")
+					return; // everything is ok
+			}
+
+		    $message = sprintf('<p>This plugin requires %s, which you do not have. Add and activate the missing plugin</p>', $missing_plugin); 
+
+		    if( function_exists('deactivate_plugins') ) {
+		        deactivate_plugins(__FILE__); 
+			}
+			exit($message);
+		}
+		
+				
 	} //End Class
 } //End if class exists statement
 
