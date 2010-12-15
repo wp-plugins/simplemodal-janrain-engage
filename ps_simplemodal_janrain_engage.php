@@ -1,15 +1,16 @@
 <?php
 /*
 Plugin Name: SimpleModal Janrain Engage
-Plugin URI: http://soderlind.no
+Plugin URI: http://soderlind.no/archives/2010/12/03/simplemodal-janrain-engage/
 Description: Adds Janrain Engage (rpx) to SimpleModal Login. The Janrain Engage and SimpleModal Login plugins must be installed and working.
-Version: 1.1
+Version: 1.1.1
 Author: PerS
 Author URI: http://soderlind.no
 */
 /*
 
 Changelog:
+v1.1.1 Minor style adjustment
 v1.1: Added language support for the Janrain Engange embedded widget and updated the ps_simplemodal_janrain_engage.pot file
 v1.0: Initial release
 
@@ -144,9 +145,9 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 		
 			$output = sprintf('
 		<div id="modalrpx" style="float:left;padding:8px;margin-right:0 auto;">
-		<iframe src="%s://%s/openid/embed?token_url=%s&language_preference=%s" scrolling="no" frameBorder="no" allowtransparency="true" style="width:350px;height:240px;margin:0;padding:0;"></iframe>
+		<iframe src="%s://%s/openid/embed?token_url=%s&language_preference=%s" scrolling="no" frameBorder="no" allowtransparency="true" style="width:350px;height:260px;margin:0;padding:0;"></iframe>
 		</div>
-		<div style="float:right;width=350px;">
+		<div style="float:right;width=350px;display:block;">
 		<form name="loginform" id="loginform" action="%s" method="post">
 			<div class="title">%s </div>
 			<div class="simplemodal-login-fields">
@@ -219,7 +220,7 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 			$options = get_option('simplemodal_login_options');
 			$output .= sprintf('
 
-		<div style="float:right;width=350px;">
+		<div style="float:right;width=350px;display:block;">
 		<form name="registerform" id="registerform" action="%s" method="post">
 			<div class="title">%s</div>
 			<div class="simplemodal-login-fields">
@@ -279,7 +280,7 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 			$options = get_option('simplemodal_login_options');
 			$output .= sprintf('
 
-		<div style="float:right;width=350px;">
+		<div style="float:right;width=350px;display:block;">
 		<form name="lostpasswordform" id="lostpasswordform" action="%s" method="post">
 			<div class="title">%s</div>
 			<div class="simplemodal-login-fields">
@@ -481,7 +482,7 @@ if (isset($_GET['ps_simplemodal_janrain_engage_style'])) {
 * @author Per Soderlind - soderlind.no
 */
 
-#simplemodal-login-container {width:710px;background:#fff; border:1px solid #e5e5e5; -moz-border-radius:11px; -webkit-border-radius:11px; border-radius:5px; -moz-box-shadow:rgba(153,153,153,1) 0 4px 18px; -webkit-box-shadow:rgba(153,153,153,1) 0 4px 18px; box-shadow:rgba(153,153,153,1) 0 4px 18px;}
+#simplemodal-login-container {width:725px;background:#fff; border:1px solid #e5e5e5; -moz-border-radius:11px; -webkit-border-radius:11px; border-radius:5px; -moz-box-shadow:rgba(153,153,153,1) 0 4px 18px; -webkit-box-shadow:rgba(153,153,153,1) 0 4px 18px; box-shadow:rgba(153,153,153,1) 0 4px 18px;}
 #simplemodal-login-container form {border:0; -moz-box-shadow:none; -webkit-box-shadow:none; box-shadow:none;}
 .simplemodal-login-credit {clear:both;width:700px;font-size:11px; padding-top:4px; text-align:center; bottom:0;}
 
