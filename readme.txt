@@ -1,7 +1,7 @@
 === SimpleModal Janrain Engage ===
 Contributors: PerS
 Donate link: http://soderlind.no/donate/
-Tags: simplemodal login, janrain engage, rpx, modal, login, facebook connect
+Tags: simplemodal login, janrain engage, rpx, modal, login, facebook connect, wp-symposium
 Requires at least: 2.8.6
 Tested up to: 3.0.3
 Stable tag: trunk
