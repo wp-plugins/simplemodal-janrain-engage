@@ -3,13 +3,14 @@
 Plugin Name: SimpleModal Janrain Engage
 Plugin URI: http://soderlind.no/archives/2010/12/03/simplemodal-janrain-engage/
 Description: Adds Janrain Engage (rpx) to SimpleModal Login. The Janrain Engage and SimpleModal Login plugins must be installed and working.
-Version: 1.1.1
+Version: 1.2.0
 Author: PerS
 Author URI: http://soderlind.no
 */
 /*
 
 Changelog:
+v1.2.0 I should have read the Janroin Engage doc a litle better, discovered a paramenter for the inline widget and "had" to rewrite the plugin. Now you can change the heading above the Janrain Engage widget using the ps_simplemodal_janrain_engage.pot file
 v1.1.1 Minor style adjustment
 v1.1: Added language support for the Janrain Engange embedded widget and updated the ps_simplemodal_janrain_engage.pot file
 v1.0: Initial release
@@ -105,15 +106,16 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 			add_filter('simplemodal_registration_form', array(&$this,'ps_simplemodal_janrain_engage_registration_form'));
 			add_filter('simplemodal_reset_form', array(&$this,'ps_simplemodal_janrain_engage_reset_form'));		    
 		}
-
-		
+            
+ 		
 		function ps_simplemodal_janrain_engage_init() {
 			// remove Janrain Engage default login and register form buttons
 			remove_action('login_head',   'rpx_login_head');
 		    remove_action('login_form',    'rpx_login_form');
-		    remove_action('register_form', 'rpx_register_form');
+		    remove_action(RPX_REGISTER_FORM_ACTION_NAME, 'rpx_register_form');
 		    remove_action('wp_head', 'rpx_login_head');
 			remove_action('wp_footer', 'rpx_wp_footer');
+		    remove_action('register_form', 'rpx_login_form');
 			
 			wp_register_style('ps_simplemodal_janrain_engage_style',  $this->url . "?ps_simplemodal_janrain_engage_style",'1.1');
 	    }
@@ -125,6 +127,7 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 			}
 		}
 
+
 		function ps_simplemodal_janrain_engange_locale() {
 			$locale = get_locale();
 			if (array_key_exists( $locale , $this->wordpress_janrain_locales )) {
@@ -134,6 +137,7 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 			}
 		}
 
+
 		function ps_simplemodal_janrain_engage_login_form($form) {
 			$users_can_register = get_option('users_can_register') ? true : false;
 			$options = get_option('simplemodal_login_options');
@@ -142,13 +146,14 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 		  	if ($rpx_api_key != ''){
 		    	$rpx_rp = rpx_get_rp($rpx_api_key);
 			}
-		
+
 			$output = sprintf('
-		<div id="modalrpx" style="float:left;padding:8px;margin-right:0 auto;">
-		<iframe src="%s://%s/openid/embed?token_url=%s&language_preference=%s" scrolling="no" frameBorder="no" allowtransparency="true" style="width:350px;height:260px;margin:0;padding:0;"></iframe>
-		</div>
-		<div style="float:right;width=350px;display:block;">
 		<form name="loginform" id="loginform" action="%s" method="post">
+		<div id="modalrpx" style="float:left;padding:0;margin-right:0 auto;">
+		<div class="title">%s</div>
+		<iframe src="%s://%s/openid/embed?token_url=%s&language_preference=%s&flags=hide_sign_in_with" scrolling="no" frameBorder="no" allowtransparency="true" style="width:350px;height:260px;margin:0;padding:0;"></iframe>
+		</div>
+		<div style="float:right;width=350px;">
 			<div class="title">%s </div>
 			<div class="simplemodal-login-fields">
 			<p>
@@ -159,12 +164,13 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 				<label>%s<br />
 				<input type="password" name="pwd" class="user_pass input" value="" size="20" tabindex="20" /></label>
 			</p>',
+				site_url('wp-login.php', 'login_post'),
+				__('Use a third party account',$this->localizationDomain),
 				$rpx_rp['realmScheme'],
 				$rpx_rp['realm'],
 				RPX_TOKEN_URL,
 				$this->ps_simplemodal_janrain_engange_locale(),
-				site_url('wp-login.php', 'login_post'),
-				__('Or, Login', $this->localizationDomain),
+				__('Or, login with your local account', $this->localizationDomain),
 				__('Username', $this->localizationDomain),
 				__('Password', $this->localizationDomain)
 			);
@@ -208,8 +214,8 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 			</p>
 			</div>
 			<div class="simplemodal-login-activity" style="display:none;"></div>
-		</form>
-		</div>';
+			</div>
+		</form>';
 
 			return $output;
 		}
@@ -218,10 +224,19 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 		function ps_simplemodal_janrain_engage_registration_form() {
 			$users_can_register = get_option('users_can_register') ? true : false;
 			$options = get_option('simplemodal_login_options');
+			$rpx_api_key = get_option(RPX_API_KEY_OPTION);
+		  	if ($rpx_api_key == ''){ $rpx_api_key = strip_tags($_POST[RPX_API_KEY_OPTION]); }
+		  	if ($rpx_api_key != ''){
+		    	$rpx_rp = rpx_get_rp($rpx_api_key);
+			}
 			$output .= sprintf('
-
-		<div style="float:right;width=350px;display:block;">
 		<form name="registerform" id="registerform" action="%s" method="post">
+		<div id="modalrpx" style="float:left;padding:0;margin-right:0 auto;">
+		<div class="title">%s</div>
+		<iframe src="%s://%s/openid/embed?token_url=%s&language_preference=%s&flags=hide_sign_in_with" scrolling="no" frameBorder="no" allowtransparency="true" style="width:350px;height:260px;margin:0;padding:0;"></iframe>
+		</div>
+		<div style="float:right;width=350px;">
+		
 			<div class="title">%s</div>
 			<div class="simplemodal-login-fields">
 			<p>
@@ -233,7 +248,12 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 				<input type="text" name="user_email" class="user_email input" value="" size="25" tabindex="20" /></label>
 			</p>',
 				site_url('wp-login.php?action=register', 'login_post'),
-				__('Or, Register', $this->localizationDomain),
+				__('The easy way',$this->localizationDomain),
+				$rpx_rp['realmScheme'],
+				$rpx_rp['realm'],
+				RPX_TOKEN_URL,
+				$this->ps_simplemodal_janrain_engange_locale(),
+				__('Or, register for a local account', $this->localizationDomain),
 				__('Username', $this->localizationDomain),
 				__('E-mail', $this->localizationDomain)
 			);
@@ -269,7 +289,9 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 			</p>
 			</div>
 			<div class="simplemodal-login-activity" style="display:none;"></div>
-		</form></div>';
+			
+		</div>
+		</form>';
 
 			return $output;
 		}
@@ -280,8 +302,9 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 			$options = get_option('simplemodal_login_options');
 			$output .= sprintf('
 
-		<div style="float:right;width=350px;display:block;">
+		
 		<form name="lostpasswordform" id="lostpasswordform" action="%s" method="post">
+		
 			<div class="title">%s</div>
 			<div class="simplemodal-login-fields">
 			<p>
@@ -319,7 +342,7 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 			</p>
 			</div>
 			<div class="simplemodal-login-activity" style="display:none;"></div>
-		</form></div>';
+		</form>';
 
 			return $output;
 		}
@@ -482,9 +505,9 @@ if (isset($_GET['ps_simplemodal_janrain_engage_style'])) {
 * @author Per Soderlind - soderlind.no
 */
 
-#simplemodal-login-container {width:725px;background:#fff; border:1px solid #e5e5e5; -moz-border-radius:11px; -webkit-border-radius:11px; border-radius:5px; -moz-box-shadow:rgba(153,153,153,1) 0 4px 18px; -webkit-box-shadow:rgba(153,153,153,1) 0 4px 18px; box-shadow:rgba(153,153,153,1) 0 4px 18px;}
-#simplemodal-login-container form {border:0; -moz-box-shadow:none; -webkit-box-shadow:none; box-shadow:none;}
-.simplemodal-login-credit {clear:both;width:700px;font-size:11px; padding-top:4px; text-align:center; bottom:0;}
+.simplemodal-container, #simplemodal-login-container {width:740px;}
+.simplemodal-container form, #simplemodal-login-container form {overflow:auto;}
+.simplemodal-login-credit {width:700px; padding-top:4px; text-align:center; bottom:0;}
 
 
 ENDCSS;
