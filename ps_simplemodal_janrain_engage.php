@@ -10,7 +10,7 @@ Author URI: http://soderlind.no
 /*
 
 Changelog:
-v1.2.0 I should have read the Janroin Engage doc a litle better, discovered a paramenter for the inline widget and "had" to rewrite the plugin. Now you can change the heading above the Janrain Engage widget using the ps_simplemodal_janrain_engage.pot file
+v1.2.0 I should have read the Janrain Engage doc a litle better, discovered a paramenter for the inline widget and "had" to rewrite the plugin. Now you can change the heading above the Janrain Engage widget using the ps_simplemodal_janrain_engage.pot file
 v1.1.1 Minor style adjustment
 v1.1: Added language support for the Janrain Engange embedded widget and updated the ps_simplemodal_janrain_engage.pot file
 v1.0: Initial release
