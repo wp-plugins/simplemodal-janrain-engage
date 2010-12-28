@@ -1,257 +1,268 @@
-# Translation of the WordPress plugin   by .
-# Copyright (C) 2010 
-# This file is distributed under the same license as the  package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
-#
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: SimpleModal Janrain Engage\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-12-16 02:00+0100\n"
-"PO-Revision-Date: 2010-12-16 02:01+0100\n"
+"POT-Creation-Date: 2010-12-28 22:33+0100\n"
+"PO-Revision-Date: 2010-12-28 22:33+0100\n"
 "Last-Translator: Per Søderlind <per@soderlind.no>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: .\n"
 
-#: ps_simplemodal_janrain_engage.php:168
+#: ps_simplemodal_janrain_engage.php:130
+#: ps_simplemodal_janrain_engage.php:131
+msgid "Please enter a number."
+msgstr ""
+
+#: ps_simplemodal_janrain_engage.php:180
 msgid "Use a third party account"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:173
+#: ps_simplemodal_janrain_engage.php:185
 msgid "Or, login with your local account"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:174
-#: ps_simplemodal_janrain_engage.php:257
+#: ps_simplemodal_janrain_engage.php:186
+#: ps_simplemodal_janrain_engage.php:269
 msgid "Username"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:175
+#: ps_simplemodal_janrain_engage.php:187
 msgid "Password"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:189
+#: ps_simplemodal_janrain_engage.php:201
 msgid "Remember Me"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:190
+#: ps_simplemodal_janrain_engage.php:202
 msgid "Log In"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:191
-#: ps_simplemodal_janrain_engage.php:275
-#: ps_simplemodal_janrain_engage.php:332
+#: ps_simplemodal_janrain_engage.php:203
+#: ps_simplemodal_janrain_engage.php:287
+#: ps_simplemodal_janrain_engage.php:344
 msgid "Cancel"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:197
-#: ps_simplemodal_janrain_engage.php:274
-#: ps_simplemodal_janrain_engage.php:338
+#: ps_simplemodal_janrain_engage.php:209
+#: ps_simplemodal_janrain_engage.php:286
+#: ps_simplemodal_janrain_engage.php:350
 msgid "Register"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:208
-#: ps_simplemodal_janrain_engage.php:283
+#: ps_simplemodal_janrain_engage.php:220
+#: ps_simplemodal_janrain_engage.php:295
 msgid "Password Lost and Found"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:209
-#: ps_simplemodal_janrain_engage.php:284
+#: ps_simplemodal_janrain_engage.php:221
+#: ps_simplemodal_janrain_engage.php:296
 msgid "Lost your password?"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:251
+#: ps_simplemodal_janrain_engage.php:263
 msgid "The easy way"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:256
+#: ps_simplemodal_janrain_engage.php:268
 msgid "Or, register for a local account"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:258
+#: ps_simplemodal_janrain_engage.php:270
 msgid "E-mail"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:273
+#: ps_simplemodal_janrain_engage.php:285
 msgid "A password will be e-mailed to you."
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:277
-#: ps_simplemodal_janrain_engage.php:334
+#: ps_simplemodal_janrain_engage.php:289
+#: ps_simplemodal_janrain_engage.php:346
 msgid "Log in"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:316
+#: ps_simplemodal_janrain_engage.php:328
 msgid "Reset Password"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:317
+#: ps_simplemodal_janrain_engage.php:329
 msgid "Username or E-mail:"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:331
+#: ps_simplemodal_janrain_engage.php:343
 msgid "Get New Password"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:381
+#: ps_simplemodal_janrain_engage.php:399
 msgid "Settings"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:397
+#: ps_simplemodal_janrain_engage.php:415
 msgid "Success! Your changes were sucessfully saved!"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:400
+#: ps_simplemodal_janrain_engage.php:418
 msgid "Bulgarian"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:401
+#: ps_simplemodal_janrain_engage.php:419
 msgid "Czech"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:402
+#: ps_simplemodal_janrain_engage.php:420
 msgid "Danish"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:403
+#: ps_simplemodal_janrain_engage.php:421
 msgid "German"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:404
+#: ps_simplemodal_janrain_engage.php:422
 msgid "Greek"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:405
+#: ps_simplemodal_janrain_engage.php:423
 msgid "English"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:406
+#: ps_simplemodal_janrain_engage.php:424
 msgid "Spanish"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:407
+#: ps_simplemodal_janrain_engage.php:425
 msgid "Finnish"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:408
+#: ps_simplemodal_janrain_engage.php:426
 msgid "French"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:409
+#: ps_simplemodal_janrain_engage.php:427
 msgid "Hebrew"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:410
+#: ps_simplemodal_janrain_engage.php:428
 msgid "Croatian"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:411
+#: ps_simplemodal_janrain_engage.php:429
 msgid "Hungarian"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:412
+#: ps_simplemodal_janrain_engage.php:430
 msgid "Indonesian"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:413
+#: ps_simplemodal_janrain_engage.php:431
 msgid "Italian"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:414
+#: ps_simplemodal_janrain_engage.php:432
 msgid "Japanese"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:415
+#: ps_simplemodal_janrain_engage.php:433
 msgid "Lithuanian"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:416
+#: ps_simplemodal_janrain_engage.php:434
 msgid "Norwegian"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:417
+#: ps_simplemodal_janrain_engage.php:435
 msgid "Dutch"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:418
+#: ps_simplemodal_janrain_engage.php:436
 msgid "Polish"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:419
+#: ps_simplemodal_janrain_engage.php:437
 msgid "Portuguese"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:420
+#: ps_simplemodal_janrain_engage.php:438
 msgid "Brazilian Portuguese"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:421
+#: ps_simplemodal_janrain_engage.php:439
 msgid "Romanian"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:422
+#: ps_simplemodal_janrain_engage.php:440
 msgid "Russian"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:423
+#: ps_simplemodal_janrain_engage.php:441
 msgid "Slovak"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:424
+#: ps_simplemodal_janrain_engage.php:442
 msgid "Slovenian"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:425
+#: ps_simplemodal_janrain_engage.php:443
 msgid "Swedish"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:426
+#: ps_simplemodal_janrain_engage.php:444
 msgid "Thai"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:427
+#: ps_simplemodal_janrain_engage.php:445
 msgid "Chinese"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:433
+#: ps_simplemodal_janrain_engage.php:451
 msgid "The Janrain Engage embedded widget support several languages (see the fallback languages below). The SimpleModal Janrain Engange plugin will try to automatically set the language for the embedded Janrain Engage widget based on your <a href=\"http://codex.wordpress.org/WordPress_in_Your_Language\">locale</a>. If the plugin doesn't find a match, it will use the selected fallback language below."
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:440
+#: ps_simplemodal_janrain_engage.php:458
 msgid "Fallback language:"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:454
+#: ps_simplemodal_janrain_engage.php:471
+msgid "Modal width:"
+msgstr ""
+
+#: ps_simplemodal_janrain_engage.php:474
+msgid "The width of the login modal in pixels (px), default is 760"
+msgstr ""
+
+#: ps_simplemodal_janrain_engage.php:479
 msgid "Save Changes"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:457
+#: ps_simplemodal_janrain_engage.php:482
 msgid "Like To Contribute?"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:459
+#: ps_simplemodal_janrain_engage.php:484
 msgid "If you would like to contribute, the following is a list of ways you can help:"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:462
+#: ps_simplemodal_janrain_engage.php:487
 msgid "Translate SimpleModal Janrain Engage into your language, the ps_simplemodal_janrain_engage.pot file is in the wp-content/plugins/simplemodal-janrain-engage/languages folder"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:463
+#: ps_simplemodal_janrain_engage.php:488
 msgid "Blog about or link to SimpleModal Janrain Engage so others can find out about it"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:464
+#: ps_simplemodal_janrain_engage.php:489
 msgid "Report issues, provide feedback, request features, etc."
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:465
+#: ps_simplemodal_janrain_engage.php:490
 msgid "Rate SimpleModal Janrain Engage on the WordPress Plugins Page"
 msgstr ""
 
-#: ps_simplemodal_janrain_engage.php:466
+#: ps_simplemodal_janrain_engage.php:491
 msgid "Make a donation"
 msgstr ""
+

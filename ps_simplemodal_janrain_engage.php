@@ -3,13 +3,14 @@
 Plugin Name: SimpleModal Janrain Engage
 Plugin URI: http://soderlind.no/archives/2010/12/03/simplemodal-janrain-engage/
 Description: Adds Janrain Engage (rpx) to SimpleModal Login. The Janrain Engage and SimpleModal Login plugins must be installed and working.
-Version: 1.2.0
+Version: 1.2.5
 Author: PerS
 Author URI: http://soderlind.no
 */
 /*
 
 Changelog:
+v1.2.5 Added "set modal width" in the settings page + minor bug fixes
 v1.2.0 I should have read the Janrain Engage doc a litle better, discovered a paramenter for the inline widget and "had" to rewrite the plugin. Now you can change the heading above the Janrain Engage widget using the ps_simplemodal_janrain_engage.pot file
 v1.1.1 Minor style adjustment
 v1.1: Added language support for the Janrain Engange embedded widget and updated the ps_simplemodal_janrain_engage.pot file
@@ -100,6 +101,7 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 			add_action("admin_menu", array(&$this,"admin_menu_link"));
 			//Actions
 			add_action("init", array(&$this,"ps_simplemodal_janrain_engage_init"));
+			add_action('wp_print_scripts', array(&$this,'ps_simplemodal_janrain_engage_script'));
 			add_action('wp_print_styles', array(&$this,'ps_simplemodal_janrain_engage_style'));
 			//Filters
 			add_filter('simplemodal_login_form', array(&$this,'ps_simplemodal_janrain_engage_login_form'));
@@ -116,14 +118,24 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 		    remove_action('wp_head', 'rpx_login_head');
 			remove_action('wp_footer', 'rpx_wp_footer');
 		    remove_action('register_form', 'rpx_login_form');
-			
-			wp_register_style('ps_simplemodal_janrain_engage_style',  $this->url . "?ps_simplemodal_janrain_engage_style",'1.1');
 	    }
 
 
+        function ps_simplemodal_janrain_engage_script() {
+            if (is_admin()){ // only run when not in wp-admin, other conditional tags at http://codex.wordpress.org/Conditional_Tags
+                wp_enqueue_script('jquery'); // other scripts included with Wordpress: http://tinyurl.com/y875age
+                wp_enqueue_script('jquery-validate', 'http://ajax.microsoft.com/ajax/jquery.validate/1.6/jquery.validate.min.js', array('jquery'));
+                wp_enqueue_script('ps_simplemodal_janrain_engage_script', $this->url.'?ps_simplemodal_janrain_engage_javascript'); // embed javascript, see end of this file
+                wp_localize_script( 'ps_simplemodal_janrain_engage_script', 'ps_simplemodal_janrain_engage_lang', array(
+                    'required' => __('Please enter a number.', $this->localizationDomain),
+                    'number'   => __('Please enter a number.', $this->localizationDomain),
+                ));
+            }
+        }
+
 		function ps_simplemodal_janrain_engage_style() {
-			if( !is_admin() ) {					
-				wp_enqueue_style('ps_simplemodal_janrain_engage_style');
+			if( !is_admin() ) {	
+				wp_enqueue_style('ps_simplemodal_janrain_engage_style',  $this->url . "?ps_simplemodal_janrain_engage_style&ps_simplemodal_janrain_engage_modal_width=" . $this->options['ps_simplemodal_janrain_engage_option_width']);				
 			}
 		}
 
@@ -353,8 +365,14 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
         * @return array
         */
         function getOptions() {
-            if (!$theOptions = get_option($this->optionsName)) {
-                $theOptions = array('ps_simplemodal_janrain_engage_option_language'=> 'en');
+			$theOptions = get_option($this->optionsName);
+            if (!$theOptions || count($theOptions) < 2) {
+				if (!$theOptions) {$theOptions = array();}
+				$theOptions = shortcode_atts(array( // merges default values with existing if they exists, about shortcode_atts: http://codex.wordpress.org/Function_Reference/shortcode_atts
+					'ps_simplemodal_janrain_engage_option_language'=> 'en',
+					'ps_simplemodal_janrain_engage_option_width'=> 760,
+				), $theOptions);
+	
                 update_option($this->optionsName, $theOptions);
             }
             $this->options = $theOptions;
@@ -391,7 +409,7 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
             if($_POST['ps_simplemodal_janrain_engage_save']){
                 if (! wp_verify_nonce($_POST['_wpnonce'], 'ps_simplemodal_janrain_engage-update-options') ) die('Whoops! There was a problem with the data you posted. Please go back and try again.');                    
 				$this->options['ps_simplemodal_janrain_engage_option_language'] = $_POST['ps_simplemodal_janrain_engage_option_language'];                   
-
+				$this->options['ps_simplemodal_janrain_engage_option_width'] = (int)$_POST['ps_simplemodal_janrain_engage_option_width'];
                 $this->saveAdminOptions();
 
                 echo '<div class="updated"><p>' . __('Success! Your changes were sucessfully saved!',$this->localizationDomain) . '</p></div>';
@@ -449,6 +467,13 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 								</select>
                             </td> 
                         </tr>
+						<tr valign="top"> 
+                            <th width="33%" scope="row"><?php _e('Modal width:', $this->localizationDomain); ?></th> 
+                            <td>
+                                <input name="ps_simplemodal_janrain_engage_option_width" type="text" id="ps_simplemodal_janrain_engage_option_width" size="45" value="<?php echo $this->options['ps_simplemodal_janrain_engage_option_width'] ;?>"/>
+                                <br /><span class="setting-description"><?php _e('The width of the login modal in pixels (px), default is 760', $this->localizationDomain); ?>
+                            </td> 
+                        </tr>
                     </table>
                     <p class="submit"> 
                         <input type="submit" name="ps_simplemodal_janrain_engage_save" class="button-primary" value="<?php _e('Save Changes', $this->localizationDomain); ?>" />
@@ -497,17 +522,52 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 } //End if class exists statement
 
 
-if (isset($_GET['ps_simplemodal_janrain_engage_style'])) {
+if (isset($_GET['ps_simplemodal_janrain_engage_javascript'])) {
+    //embed javascript
+    Header("content-type: application/x-javascript");
+    echo<<<ENDJS
+/**
+* @desc SimpleModal Janrain Engage
+* @author PerS - http://soderlind.no
+*/
+ 
+jQuery(document).ready(function(){
+    // add your jquery code here
+ 	
+    //validate plugin option form
+    jQuery("#ps_simplemodal_janrain_engage_options").validate({
+        rules: {
+            ps_simplemodal_janrain_engage_option_width: {
+                required: true,
+                number: true,
+            }
+        },
+        messages: {
+            ps_simplemodal_janrain_engage_option_width: {
+                // the ps_simplemodal_janrain_engage_lang object is defined using wp_localize_script() in function ps_simplemodal_janrain_engage_script() 
+                required: ps_simplemodal_janrain_engage_lang.required,
+                number: ps_simplemodal_janrain_engage_lang.number,
+            }
+        }
+    });
+});
+ 
+ENDJS;
+ 
+} else if (isset($_GET['ps_simplemodal_janrain_engage_style'])) {
+	
+	$m_width = (int)$_GET['ps_simplemodal_janrain_engage_modal_width'] . "px";
+	
 	Header("content-type: text/css");
 	echo<<<ENDCSS
 /**
 * @desc modify the SimpleModal Login style
-* @author Per Soderlind - soderlind.no
+* @author PerS - http://soderlind.no
 */
 
-.simplemodal-container, #simplemodal-login-container {width:740px;}
+.simplemodal-container, #simplemodal-login-container {width:$m_width; height:auto;}
 .simplemodal-container form, #simplemodal-login-container form {overflow:auto;}
-.simplemodal-login-credit {width:700px; padding-top:4px; text-align:center; bottom:0;}
+.simplemodal-login-credit {width:90%; padding-top:4px; text-align:center; bottom:0;}
 
 
 ENDCSS;
