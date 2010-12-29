@@ -42,6 +42,7 @@ Translate the login/register form, by using the included ps_simplemodal_janrain_
 1. Login
 2. Register
 3. Welcome back
+4. Integrated with SI Captcha
 
 == Changelog ==
 
