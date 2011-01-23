@@ -3,13 +3,14 @@
 Plugin Name: SimpleModal Janrain Engage
 Plugin URI: http://soderlind.no/archives/2010/12/03/simplemodal-janrain-engage/
 Description: Adds Janrain Engage (rpx) to SimpleModal Login. The Janrain Engage and SimpleModal Login plugins must be installed and working.
-Version: 1.2.5
+Version: 1.2.7
 Author: PerS
 Author URI: http://soderlind.no
 */
 /*
 
 Changelog:
+v1.2.7 Fixed bug that prevented using LinkedIn and Twitter as a identity provider. My bad, many thanks to mattp and Robert for pointing out this bug.
 v1.2.5 Added "set modal width" in the settings page + minor bug fixes
 v1.2.0 I should have read the Janrain Engage doc a litle better, discovered a paramenter for the inline widget and "had" to rewrite the plugin. Now you can change the heading above the Janrain Engage widget using the ps_simplemodal_janrain_engage.pot file
 v1.1.1 Minor style adjustment
@@ -114,7 +115,6 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 			// remove Janrain Engage default login and register form buttons
 			remove_action('login_head',   'rpx_login_head');
 		    remove_action('login_form',    'rpx_login_form');
-		    remove_action(RPX_REGISTER_FORM_ACTION_NAME, 'rpx_register_form');
 		    remove_action('wp_head', 'rpx_login_head');
 			remove_action('wp_footer', 'rpx_wp_footer');
 		    remove_action('register_form', 'rpx_login_form');
@@ -122,20 +122,23 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 
 
         function ps_simplemodal_janrain_engage_script() {
-            if (is_admin()){ // only run when not in wp-admin, other conditional tags at http://codex.wordpress.org/Conditional_Tags
-                wp_enqueue_script('jquery'); // other scripts included with Wordpress: http://tinyurl.com/y875age
+            wp_enqueue_script('jquery'); // other scripts included with Wordpress: http://tinyurl.com/y875age
+			if (is_admin()) { // only run when not in wp-admin, other conditional tags at http://codex.wordpress.org/Conditional_Tags
                 wp_enqueue_script('jquery-validate', 'http://ajax.microsoft.com/ajax/jquery.validate/1.6/jquery.validate.min.js', array('jquery'));
-                wp_enqueue_script('ps_simplemodal_janrain_engage_script', $this->url.'?ps_simplemodal_janrain_engage_javascript'); // embed javascript, see end of this file
                 wp_localize_script( 'ps_simplemodal_janrain_engage_script', 'ps_simplemodal_janrain_engage_lang', array(
                     'required' => __('Please enter a number.', $this->localizationDomain),
-                    'number'   => __('Please enter a number.', $this->localizationDomain),
+                    'number'   => __('Please enter a number.', $this->localizationDomain)
                 ));
-            }
+            } else {
+				wp_enqueue_script('jquery-loadmask', $this->urlpath . '/lib/jquery.loadmask.min.js', array('jquery'));
+                wp_enqueue_script('ps_simplemodal_janrain_engage_script', $this->url.'?ps_simplemodal_janrain_engage_javascript'); // embed javascript, see end of this file	
+			}
         }
 
 		function ps_simplemodal_janrain_engage_style() {
 			if( !is_admin() ) {	
 				wp_enqueue_style('ps_simplemodal_janrain_engage_style',  $this->url . "?ps_simplemodal_janrain_engage_style&ps_simplemodal_janrain_engage_modal_width=" . $this->options['ps_simplemodal_janrain_engage_option_width']);				
+				wp_enqueue_style('jquery-loadmask-css',  $this->urlpath. '/lib/jquery.loadmask.css');				
 			}
 		}
 
@@ -161,9 +164,11 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 
 			$output = sprintf('
 		<form name="loginform" id="loginform" action="%s" method="post">
-		<div id="modalrpx" style="float:left;padding:0;margin-right:0 auto;">
-		<div class="title">%s</div>
-		<iframe src="%s://%s/openid/embed?token_url=%s&language_preference=%s&flags=hide_sign_in_with" scrolling="no" frameBorder="no" allowtransparency="true" style="width:350px;height:260px;margin:0;padding:0;"></iframe>
+		<div id="modalrpx-loginform" style="float:left;padding:0;margin-right:0 auto;">
+			<div class="title">%s</div>
+			<div class="iframe-container">
+				<iframe id="janrain_login_iframe" src="%s://%s/openid/embed?token_url=%s&language_preference=%s&flags=hide_sign_in_with" onload="janrain_iframe_loaded(this);" scrolling="no" frameBorder="no" allowtransparency="true" style="width:350px;height:260px;margin:0;padding:0;"></iframe>
+			</div>
 		</div>
 		<div style="float:right;width=350px;">
 			<div class="title">%s </div>
@@ -243,9 +248,11 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 			}
 			$output .= sprintf('
 		<form name="registerform" id="registerform" action="%s" method="post">
-		<div id="modalrpx" style="float:left;padding:0;margin-right:0 auto;">
-		<div class="title">%s</div>
-		<iframe src="%s://%s/openid/embed?token_url=%s&language_preference=%s&flags=hide_sign_in_with" scrolling="no" frameBorder="no" allowtransparency="true" style="width:350px;height:260px;margin:0;padding:0;"></iframe>
+		<div id="modalrpx-registerform" style="float:left;padding:0;margin-right:0 auto;">
+			<div class="title">%s</div>
+			<div class="iframe-container" style="margin:0;padding:0;">
+				<iframe id="janrain_register_iframe" src="%s://%s/openid/embed?token_url=%s&language_preference=%s&flags=hide_sign_in_with" onload="janrain_iframe_loaded(this);" scrolling="no" frameBorder="no" allowtransparency="true" style="width:350px;height:260px;margin:0;padding:0;"></iframe>
+			</div>
 		</div>
 		<div style="float:right;width=350px;">
 		
@@ -530,26 +537,41 @@ if (isset($_GET['ps_simplemodal_janrain_engage_javascript'])) {
 * @desc SimpleModal Janrain Engage
 * @author PerS - http://soderlind.no
 */
+
+// Close "loading ..."
+function janrain_iframe_loaded(t) {		
+	if (!jQuery.browser.msie && jQuery(t).is(':visible') ) {
+		jQuery(".iframe-container").unmask();
+	}
+}
  
 jQuery(document).ready(function(){
-    // add your jquery code here
- 	
+	
+
+	// "loading ..."
+	if ( !jQuery.browser.msie ) {
+		jQuery(".iframe-container").mask("");	
+		jQuery('.loadmask-msg').css({top:'50%',left:'50%',margin:'-'+(jQuery('.loadmask-msg').height() / 2)+'px 0 0 -'+(jQuery('.loadmask-msg').width() / 2)+'px'});
+	}
+	
     //validate plugin option form
-    jQuery("#ps_simplemodal_janrain_engage_options").validate({
-        rules: {
-            ps_simplemodal_janrain_engage_option_width: {
-                required: true,
-                number: true,
-            }
-        },
-        messages: {
-            ps_simplemodal_janrain_engage_option_width: {
-                // the ps_simplemodal_janrain_engage_lang object is defined using wp_localize_script() in function ps_simplemodal_janrain_engage_script() 
-                required: ps_simplemodal_janrain_engage_lang.required,
-                number: ps_simplemodal_janrain_engage_lang.number,
-            }
-        }
-    });
+	if (typeof(ps_simplemodal_janrain_engage_lang) !== 'undefined') {
+	    jQuery("#ps_simplemodal_janrain_engage_options").validate({
+	        rules: {
+	            ps_simplemodal_janrain_engage_option_width: {
+	                required: true,
+	                number: true,
+	            }
+	        },
+	        messages: {
+	            ps_simplemodal_janrain_engage_option_width: {
+	                // the ps_simplemodal_janrain_engage_lang object is defined using wp_localize_script() in function ps_simplemodal_janrain_engage_script() 
+	                required: ps_simplemodal_janrain_engage_lang.required,
+	                number: ps_simplemodal_janrain_engage_lang.number,
+	            }
+	        }
+	    });
+	}
 });
  
 ENDJS;

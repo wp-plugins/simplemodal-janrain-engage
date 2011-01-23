@@ -3,7 +3,7 @@ Contributors: PerS
 Donate link: http://soderlind.no/donate/
 Tags: simplemodal login, janrain engage, rpx, modal, login, authentication,  facebook connect,  google, linkedin,  myspace, oauth, openid,  twitter, windows live, yahoo, wp-symposium
 Requires at least: 2.8.6
-Tested up to: 3.0.3
+Tested up to: 3.0.4
 Stable tag: trunk
 
 SimpleModal Janrain Engage adds Janrain Engage (aka rpx) to your SimpleModal Login
@@ -46,6 +46,8 @@ Translate the login/register form, by using the included ps_simplemodal_janrain_
 
 == Changelog ==
 
+= 1.2.7 =
+Fixed bug that prevented using LinkedIn and Twitter as a identity provider. My bad, many thanks to mattp and Robert for pointing out this bug.
 = 1.2.5 =
 Added "set modal width" in the settings page + minor bug fixes
 = 1.2.0 =
