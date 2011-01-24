@@ -3,13 +3,14 @@
 Plugin Name: SimpleModal Janrain Engage
 Plugin URI: http://soderlind.no/archives/2010/12/03/simplemodal-janrain-engage/
 Description: Adds Janrain Engage (rpx) to SimpleModal Login. The Janrain Engage and SimpleModal Login plugins must be installed and working.
-Version: 1.2.7
+Version: 1.2.8
 Author: PerS
 Author URI: http://soderlind.no
 */
 /*
 
 Changelog:
+v1.2.8 Bugfix (removed the spinner/loading icon)
 v1.2.7 Fixed bug that prevented using LinkedIn and Twitter as a identity provider. My bad, many thanks to mattp and Robert for pointing out this bug.
 v1.2.5 Added "set modal width" in the settings page + minor bug fixes
 v1.2.0 I should have read the Janrain Engage doc a litle better, discovered a paramenter for the inline widget and "had" to rewrite the plugin. Now you can change the heading above the Janrain Engage widget using the ps_simplemodal_janrain_engage.pot file
@@ -121,18 +122,16 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 	    }
 
 
-        function ps_simplemodal_janrain_engage_script() {
-            wp_enqueue_script('jquery'); // other scripts included with Wordpress: http://tinyurl.com/y875age
+        function ps_simplemodal_janrain_engage_script() {      
 			if (is_admin()) { // only run when not in wp-admin, other conditional tags at http://codex.wordpress.org/Conditional_Tags
+				wp_enqueue_script('jquery'); // other scripts included with Wordpress: http://tinyurl.com/y875age
                 wp_enqueue_script('jquery-validate', 'http://ajax.microsoft.com/ajax/jquery.validate/1.6/jquery.validate.min.js', array('jquery'));
+				wp_enqueue_script('ps_simplemodal_janrain_engage_script', $this->url.'?ps_simplemodal_janrain_engage_javascript'); // embed javascript, see end of this file
                 wp_localize_script( 'ps_simplemodal_janrain_engage_script', 'ps_simplemodal_janrain_engage_lang', array(
                     'required' => __('Please enter a number.', $this->localizationDomain),
                     'number'   => __('Please enter a number.', $this->localizationDomain)
                 ));
-            } else {
-				wp_enqueue_script('jquery-loadmask', $this->urlpath . '/lib/jquery.loadmask.min.js', array('jquery'));
-                wp_enqueue_script('ps_simplemodal_janrain_engage_script', $this->url.'?ps_simplemodal_janrain_engage_javascript'); // embed javascript, see end of this file	
-			}
+            }
         }
 
 		function ps_simplemodal_janrain_engage_style() {
@@ -167,7 +166,7 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 		<div id="modalrpx-loginform" style="float:left;padding:0;margin-right:0 auto;">
 			<div class="title">%s</div>
 			<div class="iframe-container">
-				<iframe id="janrain_login_iframe" src="%s://%s/openid/embed?token_url=%s&language_preference=%s&flags=hide_sign_in_with" onload="janrain_iframe_loaded(this);" scrolling="no" frameBorder="no" allowtransparency="true" style="width:350px;height:260px;margin:0;padding:0;"></iframe>
+				<iframe id="janrain_login_iframe" src="%s://%s/openid/embed?token_url=%s&language_preference=%s&flags=hide_sign_in_with" scrolling="no" frameBorder="no" allowtransparency="true" style="width:350px;height:260px;margin:0;padding:0;"></iframe>
 			</div>
 		</div>
 		<div style="float:right;width=350px;">
@@ -251,7 +250,7 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 		<div id="modalrpx-registerform" style="float:left;padding:0;margin-right:0 auto;">
 			<div class="title">%s</div>
 			<div class="iframe-container" style="margin:0;padding:0;">
-				<iframe id="janrain_register_iframe" src="%s://%s/openid/embed?token_url=%s&language_preference=%s&flags=hide_sign_in_with" onload="janrain_iframe_loaded(this);" scrolling="no" frameBorder="no" allowtransparency="true" style="width:350px;height:260px;margin:0;padding:0;"></iframe>
+				<iframe id="janrain_register_iframe" src="%s://%s/openid/embed?token_url=%s&language_preference=%s&flags=hide_sign_in_with" scrolling="no" frameBorder="no" allowtransparency="true" style="width:350px;height:260px;margin:0;padding:0;"></iframe>
 			</div>
 		</div>
 		<div style="float:right;width=350px;">
@@ -514,6 +513,7 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 				}
 				if ($missing_plugin == "")
 					return; // everything is ok
+					
 			}
 
 		    $message = sprintf('<p>This plugin requires %s, which you do not have. Add and activate the missing plugin</p>', $missing_plugin); 
@@ -538,21 +538,8 @@ if (isset($_GET['ps_simplemodal_janrain_engage_javascript'])) {
 * @author PerS - http://soderlind.no
 */
 
-// Close "loading ..."
-function janrain_iframe_loaded(t) {		
-	if (!jQuery.browser.msie && jQuery(t).is(':visible') ) {
-		jQuery(".iframe-container").unmask();
-	}
-}
  
 jQuery(document).ready(function(){
-	
-
-	// "loading ..."
-	if ( !jQuery.browser.msie ) {
-		jQuery(".iframe-container").mask("");	
-		jQuery('.loadmask-msg').css({top:'50%',left:'50%',margin:'-'+(jQuery('.loadmask-msg').height() / 2)+'px 0 0 -'+(jQuery('.loadmask-msg').width() / 2)+'px'});
-	}
 	
     //validate plugin option form
 	if (typeof(ps_simplemodal_janrain_engage_lang) !== 'undefined') {

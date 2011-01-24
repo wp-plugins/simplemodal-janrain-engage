@@ -46,6 +46,8 @@ Translate the login/register form, by using the included ps_simplemodal_janrain_
 
 == Changelog ==
 
+= 1.2.8 =
+Bugfix (removed the spinner/loading icon)
 = 1.2.7 =
 Fixed bug that prevented using LinkedIn and Twitter as a identity provider. My bad, many thanks to mattp and Robert for pointing out this bug.
 = 1.2.5 =
