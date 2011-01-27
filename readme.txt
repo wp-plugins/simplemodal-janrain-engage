@@ -45,7 +45,8 @@ Translate the login/register form, by using the included ps_simplemodal_janrain_
 4. Integrated with SI Captcha
 
 == Changelog ==
-
+= 1.2.9 =
+Bugfix, fixed bad path to language file. Many thanks to vinoowijn1 for pointing out this bug.
 = 1.2.8 =
 Bugfix (removed the spinner/loading icon)
 = 1.2.7 =

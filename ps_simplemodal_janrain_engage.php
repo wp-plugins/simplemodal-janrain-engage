@@ -3,13 +3,14 @@
 Plugin Name: SimpleModal Janrain Engage
 Plugin URI: http://soderlind.no/archives/2010/12/03/simplemodal-janrain-engage/
 Description: Adds Janrain Engage (rpx) to SimpleModal Login. The Janrain Engage and SimpleModal Login plugins must be installed and working.
-Version: 1.2.8
+Version: 1.2.9
 Author: PerS
 Author URI: http://soderlind.no
 */
 /*
 
 Changelog:
+v1.2.9 Bugfix, fixed bad path to language file. Many thanks to vinoowijn1 for pointing out this bug.
 v1.2.8 Bugfix (removed the spinner/loading icon)
 v1.2.7 Fixed bug that prevented using LinkedIn and Twitter as a identity provider. My bad, many thanks to mattp and Robert for pointing out this bug.
 v1.2.5 Added "set modal width" in the settings page + minor bug fixes
@@ -92,7 +93,7 @@ if (!class_exists('ps_simplemodal_janrain_engage')) {
 		function __construct(){
 		    //Language Setup
 		    $locale = get_locale();
-			$mo = plugins_url("/languages/" . $this->localizationDomain . "-".$locale.".mo", __FILE__);	
+			$mo = sprintf("%s/languages/%s-%s.mo",dirname(__FILE__),$this->localizationDomain,$locale);	
 		    load_textdomain($this->localizationDomain, $mo);
 		    //"Constants" setup
 			$this->url = plugins_url(basename(__FILE__), __FILE__);
